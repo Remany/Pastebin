@@ -27,7 +27,7 @@ public class S3Config {
         AwsBasicCredentials awsCredentials = AwsBasicCredentials.create(s3AccessKey, s3SecretKey);
 
         return S3Client.builder()
-                .region(Region.RU_MSK)
+                .region(Region.EU_WEST_3)
                 .endpointOverride(URI.create(s3EndpointUrl))
                 .credentialsProvider(StaticCredentialsProvider.create(awsCredentials))
                 .build();
