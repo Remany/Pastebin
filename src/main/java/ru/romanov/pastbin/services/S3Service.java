@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
 import software.amazon.awssdk.services.s3.model.ListBucketsResponse;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -39,8 +40,14 @@ public class S3Service {
     public String uploadText(MultipartFile multipartFile) {
         File file = convertMultipartFileToFile(multipartFile);
         String fileName = System.currentTimeMillis() + "_" + multipartFile.getOriginalFilename();
-//        s3Client.putObject(new PutObjectRequest(bucketName, fileName, fi));
-        return "";
+        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .bucket(bucketName)
+                .key(fileName)
+                .build();
+
+        s3Client.putObject(putObjectRequest, file.toPath());
+        file.delete();
+        return "File uploaded " + fileName;
     }
 
     private File convertMultipartFileToFile(MultipartFile file) {
