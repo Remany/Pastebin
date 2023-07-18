@@ -13,20 +13,20 @@ import java.util.List;
 @SpringBootApplication
 public class PastbinApplication {
 
-//	@Autowired
-//	private S3Service s3Service;
+	@Autowired
+	private S3Service s3Service;
 
 	public static void main(String[] args) {
 		SpringApplication.run(PastbinApplication.class, args);
 	}
-//	@PostConstruct
-//	public void init() {
-//		s3Service.createBucket("some");
-//
-//		ListBucketsResponse bucketsResponse = s3Service.listBuckets();
-//		List<Bucket> buckets = bucketsResponse.buckets();
-//		for (Bucket bucket : buckets) {
-//			System.out.println("Bucket: " + bucket.name());
-//		}
-//	}
+	@PostConstruct
+	public void init() {
+		s3Service.createBucket("some");
+
+		ListBucketsResponse bucketsResponse = s3Service.listBuckets();
+		List<Bucket> buckets = bucketsResponse.buckets();
+		for (Bucket bucket : buckets) {
+			System.out.println("Bucket: " + bucket.name());
+		}
+	}
 }
