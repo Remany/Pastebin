@@ -21,10 +21,8 @@ public class PastbinApplication {
 	}
 	@PostConstruct
 	public void init() {
-		// Создание бакета
-		s3Service.createBucket("my-test-bucket1");
+		s3Service.createBucket("some");
 
-		// Получение списка бакетов
 		ListBucketsResponse bucketsResponse = s3Service.listBuckets();
 		List<Bucket> buckets = bucketsResponse.buckets();
 		for (Bucket bucket : buckets) {
