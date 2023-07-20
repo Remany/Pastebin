@@ -6,9 +6,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import ru.romanov.pastbin.services.PersonDetailsService;
 
 import static org.springframework.http.HttpMethod.OPTIONS;
@@ -16,10 +18,12 @@ import static org.springframework.http.HttpMethod.OPTIONS;
 @Configuration
 public class SecurityConfig {
     private final PersonDetailsService personDetailsService;
+    private final JWTFilter jwtFilter;
 
     @Autowired
-    public SecurityConfig(PersonDetailsService personDetailsService) {
+    public SecurityConfig(PersonDetailsService personDetailsService, JWTFilter jwtFilter) {
         this.personDetailsService = personDetailsService;
+        this.jwtFilter = jwtFilter;
     }
 
     @Bean
@@ -36,7 +40,14 @@ public class SecurityConfig {
                                 .permitAll()
                                 .anyRequest()
                                 .hasAnyRole("USER", "ADMIN"))
+                .sessionManagement((session) ->
+                        session
+                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
                 .httpBasic(Customizer.withDefaults());
+
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
