@@ -1,13 +1,17 @@
 package ru.romanov.pastbin.models;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.util.Date;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "Post")
+@RequiredArgsConstructor
 public class Post {
     @Id
     @Column(name = "id")
