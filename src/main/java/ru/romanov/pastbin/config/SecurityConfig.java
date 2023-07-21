@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,16 +35,20 @@ public class SecurityConfig {
                         requests
                                 .requestMatchers(OPTIONS)
                                 .permitAll()
-                                .requestMatchers("/pastbin/auth/login", "/pastbin/auth/registration", "/error")
+                                .requestMatchers("/pastebin/auth/login", "/pastebin/auth/registration", "/error")
                                 .permitAll()
-                                .requestMatchers("/pastbin/test") // TODO убрать
+                                .requestMatchers("/pastebin/test") // TODO убрать
                                 .permitAll()
                                 .anyRequest()
                                 .hasAnyRole("USER", "ADMIN"))
                 .sessionManagement((session) ->
                         session
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
+                .formLogin((login) ->
+                        login
+                                .loginPage("/pastebin/auth/login")
+                                .permitAll())
+                .logout(LogoutConfigurer::permitAll)
                 .httpBasic(Customizer.withDefaults());
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
