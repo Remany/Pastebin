@@ -9,11 +9,11 @@ import ru.romanov.pastbin.services.S3Service;
 
 @RestController
 @RequestMapping("/pastebin/test")
-public class TestController {
+public class AWSController {
     private final S3Service s3Service;
 
     @Autowired
-    public TestController(S3Service s3Service) {
+    public AWSController(S3Service s3Service) {
         this.s3Service = s3Service;
     }
 
