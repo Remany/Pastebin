@@ -11,6 +11,7 @@ import ru.romanov.pastbin.repositories.PostRepository;
 import java.security.Principal;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -31,8 +32,9 @@ public class PostService {
         return restTemplate.getForObject(requestUrl, String.class);
     }
 
-    public Optional<Post> getPostByUrl(String url) {
-        return postRepository.findByUrl(url);
+    public Post getPostByUrl(String url) {
+        return postRepository.findByUrl(url)
+                .orElseThrow(() -> new NoSuchElementException("Post not found"));
     }
 
     private void setLifecycle(Post post) {
@@ -47,11 +49,9 @@ public class PostService {
 
     @Transactional
     public void save(Post post, Principal principal) {
-        Optional<Person> foundPerson = personService.getPersonByUsername(principal.getName());
-        if (foundPerson.isPresent()) {
-            setLifecycle(post);
-            post.setPerson(foundPerson.get());
-            postRepository.save(post);
-        }
+        Person foundPerson = personService.getPersonByUsername(principal.getName());
+        setLifecycle(post);
+        post.setPerson(foundPerson);
+        postRepository.save(post);
     }
 }

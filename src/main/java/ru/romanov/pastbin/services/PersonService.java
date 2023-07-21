@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.romanov.pastbin.models.Person;
 import ru.romanov.pastbin.repositories.PersonRepository;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -18,7 +19,8 @@ public class PersonService {
         this.personRepository = personRepository;
     }
 
-    public Optional<Person> getPersonByUsername(String username) {
-        return personRepository.findPersonByUsername(username);
+    public Person getPersonByUsername(String username) {
+        return personRepository.findPersonByUsername(username)
+                .orElseThrow(() -> new NoSuchElementException("Person not found"));
     }
 }
