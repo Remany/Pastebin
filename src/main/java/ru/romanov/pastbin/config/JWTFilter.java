@@ -12,7 +12,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.romanov.pastbin.security.JWTUtil;
-import ru.romanov.pastbin.services.PersonDetailsService;
 
 import java.io.IOException;
 

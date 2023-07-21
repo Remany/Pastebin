@@ -16,18 +16,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import ru.romanov.pastbin.services.PersonDetailsService;
 
 import static org.springframework.http.HttpMethod.OPTIONS;
 
 @Configuration
 public class SecurityConfig {
-    private final PersonDetailsService personDetailsService;
     private final JWTFilter jwtFilter;
 
     @Autowired
-    public SecurityConfig(PersonDetailsService personDetailsService, JWTFilter jwtFilter) {
-        this.personDetailsService = personDetailsService;
+    public SecurityConfig(JWTFilter jwtFilter) {
         this.jwtFilter = jwtFilter;
     }
 
@@ -53,6 +50,7 @@ public class SecurityConfig {
                                 .loginPage("/pastebin/auth/login")
                                 .permitAll())
                 .logout(LogoutConfigurer::permitAll)
+
                 .httpBasic(Customizer.withDefaults());
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
@@ -62,15 +60,16 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        UserDetails user = User
-                                    .withDefaultPasswordEncoder()
-                                    .username("user")
-                                    .password("password")
-                                    .roles("USER")
-                                    .build();
+        UserDetails user =
+                User.withDefaultPasswordEncoder()
+                        .username("user")
+                        .password("password")
+                        .roles("USER")
+                        .build();
 
         return new InMemoryUserDetailsManager(user);
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
