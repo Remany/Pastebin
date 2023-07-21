@@ -7,12 +7,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.romanov.pastbin.dto.PersonDTO;
+import ru.romanov.pastbin.models.Person;
 import ru.romanov.pastbin.services.RegistrationService;
+import ru.romanov.pastbin.util.AuthErrorResponse;
+import ru.romanov.pastbin.util.PersonAlreadyTakenException;
 import ru.romanov.pastbin.util.PersonValidator;
 
 import java.util.List;
@@ -44,13 +44,28 @@ public class AuthController {
         return errorMessage.toString();
     }
 
+    public Person convertToPerson(PersonDTO personDTO) {
+        return modelMapper.map(personDTO, Person.class);
+    }
+
     @PostMapping("/registration")
     public ResponseEntity<HttpStatus> registration(@RequestBody @Valid PersonDTO personDTO,
                                                    BindingResult bindingResult) {
         personValidator.validate(personDTO, bindingResult);
         if (bindingResult.hasErrors()) {
-            bindingResultHasErrors(bindingResult);
+            throw new PersonAlreadyTakenException(bindingResultHasErrors(bindingResult));
         }
+        Person person = convertToPerson(personDTO);
+        registrationService.registration(person);
         return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<AuthErrorResponse> handleException(PersonAlreadyTakenException e){
+        AuthErrorResponse error = new AuthErrorResponse(
+                e.getMessage(),
+                System.currentTimeMillis()
+        );
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 }
