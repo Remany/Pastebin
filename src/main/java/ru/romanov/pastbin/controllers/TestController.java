@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.romanov.pastbin.services.S3Service;
 
 @RestController
-@RequestMapping("/pastbin/test")
+@RequestMapping("/pastebin/test")
 public class TestController {
     private final S3Service s3Service;
 

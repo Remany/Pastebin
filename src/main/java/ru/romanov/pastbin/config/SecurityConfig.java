@@ -23,16 +23,16 @@ public class SecurityConfig {
                         requests
                                 .requestMatchers(OPTIONS)
                                 .permitAll()
-                                .requestMatchers("/pastbin/auth/login", "/pastbin/auth/registration", "/error")
+                                .requestMatchers("/pastebin/auth/login", "/pastebin/auth/registration", "/error")
                                 .permitAll()
-                                .requestMatchers("/pastbin/test") // TODO убрать
+                                .requestMatchers("/pastebin/test") // TODO убрать
                                 .permitAll()
                                 .anyRequest()
                                 .hasAnyRole("USER", "ADMIN"))
                 .sessionManagement((session) ->
                         session
                                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                                .invalidSessionUrl("/pastbin/auth/login?expired")
+                                .invalidSessionUrl("/pastebin/auth/login?expired")
                                 .maximumSessions(1)
                                 .maxSessionsPreventsLogin(false))
 
