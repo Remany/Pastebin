@@ -49,7 +49,7 @@ public class AuthController {
     }
 
     @PostMapping("/registration")
-    public ResponseEntity<HttpStatus> registration(@RequestBody @Valid PersonDTO personDTO,
+    public ResponseEntity<String> registration(@RequestBody @Valid PersonDTO personDTO,
                                                    BindingResult bindingResult) {
         personValidator.validate(personDTO, bindingResult);
         if (bindingResult.hasErrors()) {
@@ -57,7 +57,7 @@ public class AuthController {
         }
         Person person = convertToPerson(personDTO);
         registrationService.registration(person);
-        return ResponseEntity.ok(HttpStatus.OK);
+        return ResponseEntity.ok(String.valueOf(HttpStatus.OK));
     }
 
     @ExceptionHandler
