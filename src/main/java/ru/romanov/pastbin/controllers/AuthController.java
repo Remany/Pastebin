@@ -15,12 +15,12 @@ import ru.romanov.pastbin.services.RegistrationService;
 
 @RestController
 @RequestMapping("/pastebin/auth")
-public class RegistrationController {
+public class AuthController {
     private final RegistrationService registrationService;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public RegistrationController(RegistrationService registrationService, ModelMapper modelMapper) {
+    public AuthController(RegistrationService registrationService, ModelMapper modelMapper) {
         this.registrationService = registrationService;
         this.modelMapper = modelMapper;
     }
