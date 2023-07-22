@@ -1,6 +1,7 @@
 package ru.romanov.pastbin.controllers;
 
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,12 +17,11 @@ import ru.romanov.pastbin.dto.PersonDTO;
 import ru.romanov.pastbin.models.Person;
 import ru.romanov.pastbin.security.JWTUtil;
 import ru.romanov.pastbin.services.RegistrationService;
-import ru.romanov.pastbin.util.AuthErrorResponse;
-import ru.romanov.pastbin.util.PersonAlreadyTakenException;
 import ru.romanov.pastbin.util.PersonValidator;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/pastebin/auth")
 public class AuthController {
@@ -40,6 +40,10 @@ public class AuthController {
         this.jwtUtil = jwtUtil;
     }
 
+    public Person convertToPerson(PersonDTO personDTO) {
+        return modelMapper.map(personDTO, Person.class);
+    }
+
     private String bindingResultHasErrors(BindingResult bindingResult) {
         StringBuilder errorMessage = new StringBuilder();
         List<FieldError> errors = bindingResult.getFieldErrors();
@@ -53,29 +57,17 @@ public class AuthController {
         return errorMessage.toString();
     }
 
-    public Person convertToPerson(PersonDTO personDTO) {
-        return modelMapper.map(personDTO, Person.class);
-    }
-
     @PostMapping("/registration")
     public String registration(@RequestBody @Valid PersonDTO personDTO,
                                                    BindingResult bindingResult) {
         personValidator.validate(personDTO, bindingResult);
         if (bindingResult.hasErrors()) {
-            return String.valueOf(new PersonAlreadyTakenException(bindingResultHasErrors(bindingResult)));
-        } // TODO edit
+            log.error("Ошибка при регистрации пользователя: {}", bindingResultHasErrors(bindingResult));
+            return bindingResultHasErrors(bindingResult);
+        }
         Person person = convertToPerson(personDTO);
         registrationService.registration(person);
         return jwtUtil.generatedToken(person.getUsername());
-    }
-
-    @ExceptionHandler
-    private ResponseEntity<AuthErrorResponse> handleException(PersonAlreadyTakenException e){
-        AuthErrorResponse error = new AuthErrorResponse(
-                e.getMessage(),
-                System.currentTimeMillis()
-        );
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/login")
