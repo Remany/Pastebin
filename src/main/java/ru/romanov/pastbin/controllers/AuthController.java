@@ -56,7 +56,7 @@ public class AuthController {
                                                    BindingResult bindingResult) {
         personValidator.validate(personDTO, bindingResult);
         if (bindingResult.hasErrors()) {
-            throw new PersonAlreadyTakenException(bindingResultHasErrors(bindingResult));
+            return String.valueOf(new PersonAlreadyTakenException(bindingResultHasErrors(bindingResult)));
         }
         Person person = convertToPerson(personDTO);
         registrationService.registration(person);
