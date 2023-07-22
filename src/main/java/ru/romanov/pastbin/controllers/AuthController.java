@@ -5,9 +5,13 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import ru.romanov.pastbin.dto.AuthDTO;
 import ru.romanov.pastbin.dto.PersonDTO;
 import ru.romanov.pastbin.models.Person;
 import ru.romanov.pastbin.security.JWTUtil;
@@ -22,13 +26,15 @@ import java.util.List;
 @RequestMapping("/pastebin/auth")
 public class AuthController {
     private final RegistrationService registrationService;
+    private final AuthenticationManager authenticationManager;
     private final PersonValidator personValidator;
     private final ModelMapper modelMapper;
     private final JWTUtil jwtUtil;
 
     @Autowired
-    public AuthController(RegistrationService registrationService, ModelMapper modelMapper, PersonValidator personValidator, JWTUtil jwtUtil) {
+    public AuthController(RegistrationService registrationService, AuthenticationManager authenticationManager, ModelMapper modelMapper, PersonValidator personValidator, JWTUtil jwtUtil) {
         this.registrationService = registrationService;
+        this.authenticationManager = authenticationManager;
         this.modelMapper = modelMapper;
         this.personValidator = personValidator;
         this.jwtUtil = jwtUtil;
@@ -70,5 +76,18 @@ public class AuthController {
                 System.currentTimeMillis()
         );
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping("/login")
+    public String login (@RequestBody AuthDTO authDTO) {
+        UsernamePasswordAuthenticationToken authInputToken = new UsernamePasswordAuthenticationToken(
+                authDTO.getUsername(), authDTO.getPassword()
+        );
+        try {
+            authenticationManager.authenticate(authInputToken);
+        } catch (BadCredentialsException e) {
+            return "Incorrect credentials!";
+        }
+        return jwtUtil.generatedToken(authDTO.getUsername());
     }
 }
