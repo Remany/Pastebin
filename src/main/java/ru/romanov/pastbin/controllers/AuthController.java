@@ -10,6 +10,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import ru.romanov.pastbin.dto.PersonDTO;
 import ru.romanov.pastbin.models.Person;
+import ru.romanov.pastbin.security.JWTUtil;
 import ru.romanov.pastbin.services.RegistrationService;
 import ru.romanov.pastbin.util.AuthErrorResponse;
 import ru.romanov.pastbin.util.PersonAlreadyTakenException;
@@ -23,12 +24,14 @@ public class AuthController {
     private final RegistrationService registrationService;
     private final PersonValidator personValidator;
     private final ModelMapper modelMapper;
+    private final JWTUtil jwtUtil;
 
     @Autowired
-    public AuthController(RegistrationService registrationService, ModelMapper modelMapper, PersonValidator personValidator) {
+    public AuthController(RegistrationService registrationService, ModelMapper modelMapper, PersonValidator personValidator, JWTUtil jwtUtil) {
         this.registrationService = registrationService;
         this.modelMapper = modelMapper;
         this.personValidator = personValidator;
+        this.jwtUtil = jwtUtil;
     }
 
     private String bindingResultHasErrors(BindingResult bindingResult) {
@@ -49,7 +52,7 @@ public class AuthController {
     }
 
     @PostMapping("/registration")
-    public ResponseEntity<String> registration(@RequestBody @Valid PersonDTO personDTO,
+    public String registration(@RequestBody @Valid PersonDTO personDTO,
                                                    BindingResult bindingResult) {
         personValidator.validate(personDTO, bindingResult);
         if (bindingResult.hasErrors()) {
@@ -57,7 +60,7 @@ public class AuthController {
         }
         Person person = convertToPerson(personDTO);
         registrationService.registration(person);
-        return ResponseEntity.ok(String.valueOf(HttpStatus.OK));
+        return jwtUtil.generatedToken(person.getUsername());
     }
 
     @ExceptionHandler
