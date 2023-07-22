@@ -46,12 +46,6 @@ public class SecurityConfig {
                 .sessionManagement((session) ->
                         session
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .formLogin((login) ->
-                        login
-                                .loginPage("/pastebin/auth/login")
-                                .permitAll())
-                .logout(LogoutConfigurer::permitAll)
-
                 .httpBasic(Customizer.withDefaults());
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
@@ -68,7 +62,6 @@ public class SecurityConfig {
                         .and()
                         .build();
     }
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {

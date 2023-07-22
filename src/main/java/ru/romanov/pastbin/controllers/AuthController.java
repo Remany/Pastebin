@@ -63,7 +63,7 @@ public class AuthController {
         personValidator.validate(personDTO, bindingResult);
         if (bindingResult.hasErrors()) {
             return String.valueOf(new PersonAlreadyTakenException(bindingResultHasErrors(bindingResult)));
-        }
+        } // TODO edit
         Person person = convertToPerson(personDTO);
         registrationService.registration(person);
         return jwtUtil.generatedToken(person.getUsername());
