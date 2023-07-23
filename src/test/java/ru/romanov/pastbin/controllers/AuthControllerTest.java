@@ -6,7 +6,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindingResult;
+import ru.romanov.pastbin.dto.AuthDTO;
 import ru.romanov.pastbin.dto.PersonDTO;
 import ru.romanov.pastbin.models.Person;
 import ru.romanov.pastbin.security.JWTUtil;
@@ -26,6 +29,8 @@ class AuthControllerTest {
     private PersonValidator personValidator;
     @Mock
     private RegistrationService registrationService;
+    @Mock
+    private AuthenticationManager authenticationManager;
     @InjectMocks
     private AuthController authController;
 
@@ -53,6 +58,32 @@ class AuthControllerTest {
     }
 
     @Test
-    void login() {
+    void shouldBeLoginIfValidCredentials() {
+        AuthDTO authDTO = new AuthDTO();
+        authDTO.setUsername("testuser");
+        authDTO.setPassword("testpassword");
+
+        when(jwtUtil.generatedToken("testuser")).thenReturn("generatedToken");
+
+        String result = authController.login(authDTO);
+
+        verify(authenticationManager).authenticate(any());
+        verify(jwtUtil).generatedToken("testuser");
+        assertEquals("generatedToken", result);
+    }
+
+    @Test
+    void doNotShouldLoginIfInvalidCredentials() {
+        AuthDTO authDTO = new AuthDTO();
+        authDTO.setUsername("testuser");
+        authDTO.setPassword("testpassword");
+
+        doThrow(BadCredentialsException.class).when(authenticationManager).authenticate(any());
+
+        String result = authController.login(authDTO);
+
+        verify(authenticationManager).authenticate(any());
+        verifyNoInteractions(jwtUtil);
+        assertEquals("Incorrect credentials!", result);
     }
 }
