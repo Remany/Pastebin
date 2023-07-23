@@ -14,8 +14,7 @@ import ru.romanov.pastbin.services.RegistrationService;
 import ru.romanov.pastbin.util.PersonValidator;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AuthControllerTest {
@@ -40,7 +39,17 @@ class AuthControllerTest {
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(false);
 
-        when(modelMapper.map(personDTO, Person.class)).thenReturn(Person.class.newInstance());
+        Person person = new Person();
+        when(modelMapper.map(personDTO, Person.class)).thenReturn(person);
+        when(jwtUtil.generatedToken(person.getUsername())).thenReturn("generatedToken");
+
+        String result = authController.registration(personDTO, bindingResult);
+
+        verify(personValidator).validate(personDTO, bindingResult);
+        verify(registrationService).registration(person);
+        verify(jwtUtil).generatedToken(person.getUsername());
+
+        assertEquals("generatedToken", result);
     }
 
     @Test
