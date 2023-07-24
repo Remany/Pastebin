@@ -41,4 +41,8 @@ public class PostService {
             postRepository.save(post);
         }
     }
+
+    public Optional<Post> getPostByUrl(String url) {
+        return postRepository.findByUrl(url);
+    }
 }

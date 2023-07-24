@@ -11,6 +11,7 @@ import ru.romanov.pastbin.services.PostService;
 import ru.romanov.pastbin.services.S3Service;
 
 import java.security.Principal;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/pastebin/posts")
@@ -25,6 +26,10 @@ public class PostController {
         this.modelMapper = modelMapper;
     }
 
+    private static void accept(Post examplePost) {
+        new Post();
+    }
+
     private Post convertToPost(PostDTO postDTO) {
         return this.modelMapper.map(postDTO, Post.class);
     }
@@ -36,5 +41,11 @@ public class PostController {
         postService.save(post, principal);
         s3Service.uploadText(post.getText(), principal);
         return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    @GetMapping("/get/{url}")
+    public Post getPost(@PathVariable("url") String url) {
+        Optional<Post> foundPost = postService.getPostByUrl(url);
+        return foundPost.get();
     }
 }
