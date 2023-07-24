@@ -1,5 +1,6 @@
 package ru.romanov.pastbin.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -24,4 +25,8 @@ public class Post {
     private Date createdAt;
     @Transient
     private String text;
+    @ManyToOne
+    @JsonBackReference
+    @JoinColumn(name = "person_id", referencedColumnName = "id")
+    private Person person;
 }
