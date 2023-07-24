@@ -3,15 +3,15 @@ package ru.romanov.pastbin.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
 import software.amazon.awssdk.services.s3.model.ListBucketsResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.Principal;
 
 @Service
 public class S3Service {
@@ -37,26 +37,17 @@ public class S3Service {
         return s3Client.listBuckets();
     }
 
-    public String uploadText(MultipartFile multipartFile) {
-        File file = convertMultipartFileToFile(multipartFile);
-        String fileName = System.currentTimeMillis() + "_" + multipartFile.getOriginalFilename();
-        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+    public String uploadText(String text, Principal principal) throws S3Exception {
+        String objectKey = System.currentTimeMillis() + "_" + principal.hashCode();
+        byte[] contentBytes = text.getBytes(StandardCharsets.UTF_8);
+        s3Client.putObject(PutObjectRequest.builder()
                 .bucket(bucketName)
-                .key(fileName)
-                .build();
+                .key(objectKey)
+                .contentType("text/plain")
+                .contentLength((long) contentBytes.length)
+                .build(), RequestBody.fromBytes(contentBytes));
 
-        s3Client.putObject(putObjectRequest, file.toPath());
-        file.delete();
-        return "File uploaded " + fileName;
-    }
-
-    private File convertMultipartFileToFile(MultipartFile file) {
-        File convertedFile = new File(file.getOriginalFilename());
-        try (FileOutputStream fos = new FileOutputStream(convertedFile)) {
-            fos.write(file.getBytes());
-        } catch (IOException e) {
-            throw new RuntimeException("Error converting multipartFile to file", e);
-        }
-        return convertedFile;
+        System.out.println("Файл успешно загружен в Amazon S3.");
+        return "Upload text";
     }
 }
