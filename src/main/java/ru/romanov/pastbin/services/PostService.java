@@ -3,6 +3,7 @@ package ru.romanov.pastbin.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 import ru.romanov.pastbin.models.Person;
 import ru.romanov.pastbin.models.Post;
 import ru.romanov.pastbin.repositories.PostRepository;
@@ -21,6 +22,14 @@ public class PostService {
     public PostService(PostRepository postRepository, PersonService personService) {
         this.postRepository = postRepository;
         this.personService = personService;
+    }
+
+    public String createUrl() {
+//        RestTemplate restTemplate = new RestTemplate();
+//        String requestUrl = "http://localhost:8088/get/url";
+//        String resultUrl = restTemplate.getForObject(requestUrl, String.class);
+        String url = "testurl";
+        return url; // TODO edit later
     }
 
     @Transactional

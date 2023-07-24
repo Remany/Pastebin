@@ -37,7 +37,7 @@ public class S3Service {
         return s3Client.listBuckets();
     }
 
-    public String uploadText(String text, Principal principal) throws S3Exception {
+    public void uploadText(String text, Principal principal) throws S3Exception {
         String objectKey = System.currentTimeMillis() + "_" + principal.hashCode();
         byte[] contentBytes = text.getBytes(StandardCharsets.UTF_8);
         s3Client.putObject(PutObjectRequest.builder()
@@ -48,6 +48,5 @@ public class S3Service {
                 .build(), RequestBody.fromBytes(contentBytes));
 
         System.out.println("Файл успешно загружен в Amazon S3.");
-        return "Upload text";
     }
 }

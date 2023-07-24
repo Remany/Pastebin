@@ -32,6 +32,7 @@ public class PostController {
     @PostMapping("/create")
     public ResponseEntity<HttpStatus> createPost(@RequestBody PostDTO postDTO, Principal principal) {
         Post post = convertToPost(postDTO);
+        post.setUrl(postService.createUrl());
         postService.save(post, principal);
         s3Service.uploadText(post.getText(), principal);
         return ResponseEntity.ok(HttpStatus.OK);
