@@ -8,12 +8,12 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.romanov.pastbin.services.S3Service;
 
 @RestController
-@RequestMapping("/pastebin/test")
-public class AWSController {
+@RequestMapping("/pastebin/s3")
+public class S3Controller {
     private final S3Service s3Service;
 
     @Autowired
-    public AWSController(S3Service s3Service) {
+    public S3Controller(S3Service s3Service) {
         this.s3Service = s3Service;
     }
 
