@@ -18,11 +18,13 @@ public class Post {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-//    @Column(name = "url")
-//    private String url;
+    @Column(name = "url")
+    private String url;
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
+    @Column(name = "title")
+    private String title;
     @Transient
     private String text;
     @ManyToOne
