@@ -38,7 +38,7 @@ public class SecurityConfig {
                                 .permitAll()
                                 .requestMatchers("/pastebin/auth/login", "/pastebin/auth/registration", "/error")
                                 .permitAll()
-                                .requestMatchers("/pastebin/test") // TODO убрать
+                                .requestMatchers("pastebin/posts/get/{url}")
                                 .permitAll()
                                 .anyRequest()
                                 .hasAnyRole("USER", "ADMIN"))
