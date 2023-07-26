@@ -26,7 +26,7 @@ public class PostService {
 
     public String createUrl() {
 //        RestTemplate restTemplate = new RestTemplate();
-//        String requestUrl = "http://localhost:8088/get/url";
+//        String requestUrl = "http://localhost:8088/generator/url/get/";
 //        String resultUrl = restTemplate.getForObject(requestUrl, String.class);
         String url = "testurl";
         return url; // TODO edit later
