@@ -25,10 +25,6 @@ public class PostController {
         this.modelMapper = modelMapper;
     }
 
-    private static void accept(Post examplePost) {
-        new Post();
-    }
-
     private Post convertToPost(PostDTO postDTO) {
         return this.modelMapper.map(postDTO, Post.class);
     }

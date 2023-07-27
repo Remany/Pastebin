@@ -9,3 +9,4 @@ s3.accessKey=
 s3.secretKey=
 s3.bucketName=
 jwt_secret=
+server.port=
