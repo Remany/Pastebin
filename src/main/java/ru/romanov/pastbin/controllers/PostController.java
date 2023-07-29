@@ -31,8 +31,9 @@ public class PostController {
 
     @PostMapping("/create")
     public ResponseEntity<String> createPost(@RequestBody PostDTO postDTO, Principal principal) {
+        String domain = "http://localhost:8080/pastebin/posts/get/";
         Post post = convertToPost(postDTO);
-        post.setUrl(postService.createUrl());
+        post.setUrl(domain + postService.createUrl());
         postService.save(post, principal);
         s3Service.uploadText(post.getText(), principal);
         return ResponseEntity.ok(post.getUrl());
@@ -40,7 +41,8 @@ public class PostController {
 
     @GetMapping("/get/{url}")
     public Post getPost(@PathVariable("url") String url) {
-        Optional<Post> foundPost = postService.getPostByUrl(url);
+        String domain = "http://localhost:8080/pastebin/posts/get/";
+        Optional<Post> foundPost = postService.getPostByUrl(domain + url);
         return foundPost.get();
     }
 }
