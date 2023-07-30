@@ -34,8 +34,8 @@ public class PostController {
         String domain = "http://localhost:8080/pastebin/posts/get/";
         Post post = convertToPost(postDTO);
         post.setUrl(domain + postService.createUrl());
-        postService.save(post, principal);
         post.setObjectKey(s3Service.uploadText(post.getText(), principal));
+        postService.save(post, principal);
         return ResponseEntity.ok(post.getUrl());
     }
 
