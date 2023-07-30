@@ -35,7 +35,7 @@ public class PostController {
         Post post = convertToPost(postDTO);
         post.setUrl(domain + postService.createUrl());
         postService.save(post, principal);
-        s3Service.uploadText(post.getText(), principal);
+        post.setObjectKey(s3Service.uploadText(post.getText(), principal));
         return ResponseEntity.ok(post.getUrl());
     }
 

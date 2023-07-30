@@ -15,10 +15,9 @@ import java.security.Principal;
 
 @Service
 public class S3Service {
-    private final S3Client s3Client;
-
     @Value("${s3.bucketName}")
     private String bucketName;
+    private final S3Client s3Client;
 
     @Autowired
     public S3Service(S3Client s3Client) {
@@ -37,7 +36,7 @@ public class S3Service {
         return s3Client.listBuckets();
     }
 
-    public void uploadText(String text, Principal principal) throws S3Exception {
+    public String uploadText(String text, Principal principal) throws S3Exception {
         String objectKey = System.currentTimeMillis() + "_" + principal.hashCode();
         byte[] contentBytes = text.getBytes(StandardCharsets.UTF_8);
         s3Client.putObject(PutObjectRequest.builder()
@@ -47,6 +46,7 @@ public class S3Service {
                 .contentLength((long) contentBytes.length)
                 .build(), RequestBody.fromBytes(contentBytes));
 
-        System.out.println("Файл успешно загружен в Amazon S3.");
+        System.out.println("Loading is complete");
+        return objectKey;
     }
 }

@@ -27,6 +27,8 @@ public class Post {
     private String title;
     @Transient
     private String text;
+    @Column(name = "object_key")
+    private String objectKey;
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "person_id", referencedColumnName = "id")
