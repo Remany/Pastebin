@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.webjars.NotFoundException;
 import ru.romanov.pastbin.dto.PostDTO;
 import ru.romanov.pastbin.models.Post;
 import ru.romanov.pastbin.services.PostService;
@@ -43,6 +44,8 @@ public class PostController {
     public Post getPost(@PathVariable("url") String url) {
         String domain = "http://localhost:8080/pastebin/posts/get/";
         Optional<Post> foundPost = postService.getPostByUrl(domain + url);
-        return foundPost.get();
+        Post post = foundPost.orElseThrow(() -> new NotFoundException("Post not found"));
+        post.setText(s3Service.getTextFromS3(post.getObjectKey()));
+        return post;
     }
 }

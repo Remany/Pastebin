@@ -3,12 +3,11 @@ package ru.romanov.pastbin.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.core.ResponseBytes;
+import software.amazon.awssdk.core.sync.ResponseTransformer;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
-import software.amazon.awssdk.services.s3.model.ListBucketsResponse;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import software.amazon.awssdk.services.s3.model.S3Exception;
+import software.amazon.awssdk.services.s3.model.*;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Principal;
@@ -48,5 +47,22 @@ public class S3Service {
 
         System.out.println("Loading is complete");
         return objectKey;
+    }
+
+    public String getTextFromS3(String objectKey) {
+        GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+                .bucket(bucketName)
+                .key(objectKey)
+                .build();
+
+        // Получаем объект из S3
+        ResponseBytes<GetObjectResponse> responseBytes = s3Client
+                .getObject(getObjectRequest, ResponseTransformer.toBytes());
+
+        // Чтение данных из ответа
+        byte[] data = responseBytes.asByteArray();
+        String text = new String(data, StandardCharsets.UTF_8);
+
+        return text;
     }
 }
