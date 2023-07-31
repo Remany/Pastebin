@@ -44,15 +44,15 @@ class AuthControllerTest {
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(false);
 
-        Person person = new Person();
-        when(modelMapper.map(personDTO, Person.class)).thenReturn(person);
-        when(jwtUtil.generatedToken(person.getUsername())).thenReturn("generatedToken");
+        Person expectedPerson = new Person();
+        when(modelMapper.map(personDTO, Person.class)).thenReturn(expectedPerson);
+        when(jwtUtil.generatedToken(expectedPerson.getUsername())).thenReturn("generatedToken");
 
         String result = authController.registration(personDTO, bindingResult);
 
         verify(personValidator).validate(personDTO, bindingResult);
-        verify(registrationService).registration(person);
-        verify(jwtUtil).generatedToken(person.getUsername());
+        verify(registrationService).registration(expectedPerson);
+        verify(jwtUtil).generatedToken(expectedPerson.getUsername());
 
         assertEquals("generatedToken", result);
     }
