@@ -35,5 +35,10 @@ build/
 ### application.properties ###
 src/main/resources/application.properties
 
-### docker-compose ###
-docker-compose.yml
+### kubectl ###
+app-1.yaml
+app-2.yaml
+
+### load balancer ###
+app-1-service.yaml
+app-2-service.yaml
