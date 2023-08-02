@@ -42,3 +42,6 @@ app-2.yaml
 ### load balancer ###
 app-1-service.yaml
 app-2-service.yaml
+
+### docker-compose ###
+docker-compose.yml
