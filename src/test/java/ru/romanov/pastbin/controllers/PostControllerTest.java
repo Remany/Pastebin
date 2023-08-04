@@ -16,6 +16,7 @@ import ru.romanov.pastbin.services.PostService;
 import ru.romanov.pastbin.services.S3Service;
 
 import java.security.Principal;
+import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 public class PostControllerTest {
@@ -28,7 +29,7 @@ public class PostControllerTest {
     @InjectMocks
     private PostController postController;
     @Test
-    public void  shouldCreatedPost() {
+    void shouldCreatedPost() {
         PostDTO postDTO = new PostDTO();
         postDTO.setText("Test post content");
 
@@ -47,5 +48,23 @@ public class PostControllerTest {
         assertEquals(expectedUrl, responseEntity.getBody());
 
         verify(postService, times(1)).save(expectedPost, principal);
+    }
+
+    @Test
+    void shouldGettingPost() {
+        String domain = "http://localhost:8080/pastebin/posts/get/";
+        String url = "someurl";
+
+        Post expectedPost = new Post();
+        expectedPost.setObjectKey("someKey");
+        expectedPost.setText("some text");
+
+        when(postService.getPostByUrl(domain + url)).thenReturn(Optional.of(expectedPost));
+        when(s3Service.getTextFromS3(expectedPost.getObjectKey())).thenReturn(expectedPost.getText());
+
+        Post resultPost = postController.getPost(url);
+
+        assertNotNull(resultPost);
+        assertEquals(resultPost.getText(), expectedPost.getText());
     }
 }
