@@ -9,6 +9,7 @@ import ru.romanov.pastbin.models.Post;
 import ru.romanov.pastbin.repositories.PostRepository;
 
 import java.security.Principal;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
 
@@ -39,6 +40,10 @@ public class PostService {
         Optional<Person> foundPerson = personService.getPersonByUsername(principal.getName());
         if (foundPerson.isPresent()) {
             post.setCreatedAt(new Date());
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(post.getCreatedAt());
+            calendar.add(Calendar.DAY_OF_YEAR, post.getLifecycle());
+            post.setExpiresAt(calendar.getTime());
             post.setPerson(foundPerson.get());
             postRepository.save(post);
         }

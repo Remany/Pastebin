@@ -23,10 +23,15 @@ public class Post {
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
+    @Column(name = "expires_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date expiresAt;
     @Column(name = "title")
     private String title;
     @Transient
     private String text;
+    @Transient
+    private int lifecycle;
     @Column(name = "object_key")
     private String objectKey;
     @ManyToOne

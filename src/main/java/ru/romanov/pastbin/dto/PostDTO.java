@@ -6,4 +6,5 @@ import lombok.Data;
 public class PostDTO {
     private String title;
     private String text;
+    private int lifecycle;
 }
