@@ -47,11 +47,9 @@ public class PostService {
 
     @Transactional
     public void save(Post post, Principal principal) {
-        Optional<Person> foundPerson = personService.getPersonByUsername(principal.getName());
-        if (foundPerson.isPresent()) {
-            setLifecycle(post);
-            post.setPerson(foundPerson.get());
-            postRepository.save(post);
-        }
+        Person foundPerson = personService.getPersonByUsername(principal.getName());
+        setLifecycle(post);
+        post.setPerson(foundPerson);
+        postRepository.save(post);
     }
 }

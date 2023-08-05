@@ -8,6 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.romanov.pastbin.models.Person;
 import ru.romanov.pastbin.repositories.PersonRepository;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,7 +21,7 @@ class PersonServiceTest {
     @InjectMocks
     private PersonService personService;
     @Test
-    void shouldGettingPersonByUsernameIfUserFound() {
+    void shouldGettingPersonWhenUserFound() {
         Person expectedPerson = new Person();
         expectedPerson.setUsername("some name");
         expectedPerson.setPassword("some password");
@@ -35,13 +36,15 @@ class PersonServiceTest {
     }
 
     @Test
-    void shouldGettingPersonByUsernameIfUserNotFound() {
+    void shouldThrowExceptionWhenUserNotFound() {
         String username = "some name";
 
         when(personRepository.findPersonByUsername(username)).thenReturn(Optional.empty());
 
         Optional<Person> resultPerson = personRepository.findPersonByUsername(username);
 
-        assertFalse(resultPerson.isPresent());
+        assertThrows(NoSuchElementException.class, () -> {
+            personService.getPersonByUsername(username);
+        });
     }
 }
