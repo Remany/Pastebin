@@ -35,15 +35,21 @@ public class PostService {
         return postRepository.findByUrl(url);
     }
 
-    @Transactional
-    public void save(Post post, Principal principal) {
-        Optional<Person> foundPerson = personService.getPersonByUsername(principal.getName());
-        if (foundPerson.isPresent()) {
-            post.setCreatedAt(new Date());
+    private void setLifecycle(Post post) {
+        post.setCreatedAt(new Date());
+        if (post.getLifecycle() != 0) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(post.getCreatedAt());
             calendar.add(Calendar.DAY_OF_YEAR, post.getLifecycle());
             post.setExpiresAt(calendar.getTime());
+        }
+    }
+
+    @Transactional
+    public void save(Post post, Principal principal) {
+        Optional<Person> foundPerson = personService.getPersonByUsername(principal.getName());
+        if (foundPerson.isPresent()) {
+            setLifecycle(post);
             post.setPerson(foundPerson.get());
             postRepository.save(post);
         }
