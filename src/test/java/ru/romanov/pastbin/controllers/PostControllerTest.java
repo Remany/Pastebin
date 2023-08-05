@@ -1,5 +1,6 @@
 package ru.romanov.pastbin.controllers;
 
+import static java.util.Optional.empty;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
@@ -65,7 +66,7 @@ public class PostControllerTest {
         expectedPost.setObjectKey("someKey");
         expectedPost.setText("some text");
 
-        when(postService.getPostByUrl(domain + url)).thenReturn(Optional.of(expectedPost));
+        when(postService.getPostByUrl(domain + url)).thenReturn(expectedPost);
         when(s3Service.getTextFromS3(expectedPost.getObjectKey())).thenReturn(expectedPost.getText());
 
         ResponseEntity<ReturnedPostDTO> responseEntity = postController.getPost(url);
@@ -79,11 +80,7 @@ public class PostControllerTest {
     void shouldThrowExceptionWhenPostNotFound() {
         String domain = "http://localhost:8080/pastebin/posts/get/";
         String url = "someurl";
-
-        when(postService.getPostByUrl(domain + url)).thenReturn(Optional.empty());
-
-        Optional<Post> resultPost = postRepository.findByUrl(domain + url);
-
+        when(postService.getPostByUrl(domain + url)).thenThrow(NoSuchElementException.class);
         assertThrows(NoSuchElementException.class, () -> {
             postController.getPost(url);
         });

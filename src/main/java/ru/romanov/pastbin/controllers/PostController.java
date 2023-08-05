@@ -43,8 +43,7 @@ public class PostController {
     @GetMapping("/get/{url}")
     public ResponseEntity<ReturnedPostDTO> getPost(@PathVariable("url") String url) {
         String domain = "http://localhost:8080/pastebin/posts/get/";
-        Post foundPost = postService.getPostByUrl(domain + url)
-                .orElseThrow(() -> new NoSuchElementException("Post not found"));
+        Post foundPost = postService.getPostByUrl(domain + url);
         String text = s3Service.getTextFromS3(foundPost.getObjectKey());
         String title = foundPost.getTitle();
         return ResponseEntity.ok(new ReturnedPostDTO(title, text));
