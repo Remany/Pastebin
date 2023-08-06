@@ -9,10 +9,8 @@ import ru.romanov.pastbin.models.Post;
 import ru.romanov.pastbin.repositories.PostRepository;
 
 import java.security.Principal;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -35,6 +33,12 @@ public class PostService {
     public Post getPostByUrl(String url) {
         return postRepository.findByUrl(url)
                 .orElseThrow(() -> new NoSuchElementException("Post not found"));
+    }
+
+    public void deleteExpiredPosts() {
+        Date currentTime = new Date();
+        List<Post> expiredPosts = postRepository.findByExpiresAtBefore(currentTime);
+        postRepository.deleteAll(expiredPosts);
     }
 
     private void setLifecycle(Post post) {
