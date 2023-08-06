@@ -9,7 +9,6 @@ import ru.romanov.pastbin.models.Post;
 import ru.romanov.pastbin.repositories.PostRepository;
 
 import java.security.Principal;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -35,12 +34,6 @@ public class PostService {
                 .orElseThrow(() -> new NoSuchElementException("Post not found"));
     }
 
-    public void deleteExpiredPosts() {
-        Date currentTime = new Date();
-        List<Post> expiredPosts = postRepository.findByExpiresAtBefore(currentTime);
-        postRepository.deleteAll(expiredPosts);
-    }
-
     private void setLifecycle(Post post) {
         post.setCreatedAt(new Date());
         if (post.getLifecycle() != 0) {
@@ -57,5 +50,12 @@ public class PostService {
         setLifecycle(post);
         post.setPerson(foundPerson);
         postRepository.save(post);
+    }
+
+    @Transactional
+    public void deleteExpiredPosts() {
+        Date currentTime = new Date();
+        List<Post> expiredPosts = postRepository.findByExpiresAtBefore(currentTime);
+        postRepository.deleteAll(expiredPosts);
     }
 }
