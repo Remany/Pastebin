@@ -55,14 +55,19 @@ public class S3Service {
                 .key(objectKey)
                 .build();
 
-        // Получаем объект из S3
         ResponseBytes<GetObjectResponse> responseBytes = s3Client
                 .getObject(getObjectRequest, ResponseTransformer.toBytes());
-
-        // Чтение данных из ответа
         byte[] data = responseBytes.asByteArray();
-        String text = new String(data, StandardCharsets.UTF_8);
 
-        return text;
+        return new String(data, StandardCharsets.UTF_8);
+    }
+
+    public void deleteObjectFromS3(String objectKey) {
+        DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+                .bucket(bucketName)
+                .key(objectKey)
+                .build();
+        DeleteObjectResponse deleteObjectResponse = s3Client.deleteObject(deleteObjectRequest);
+        System.out.println("Объект успешно удален из S3 хранилища");
     }
 }

@@ -16,11 +16,13 @@ import java.util.*;
 public class PostService {
     private final PostRepository postRepository;
     private final PersonService personService;
+    private final S3Service s3Service;
 
     @Autowired
-    public PostService(PostRepository postRepository, PersonService personService) {
+    public PostService(PostRepository postRepository, PersonService personService, S3Service s3Service) {
         this.postRepository = postRepository;
         this.personService = personService;
+        this.s3Service = s3Service;
     }
 
     public String createUrl() {
@@ -56,6 +58,9 @@ public class PostService {
     public void deleteExpiredPosts() {
         Date currentTime = new Date();
         List<Post> expiredPosts = postRepository.findByExpiresAtBefore(currentTime);
+        expiredPosts.forEach(post -> {
+            s3Service.deleteObjectFromS3(post.getObjectKey());
+        });
         postRepository.deleteAll(expiredPosts);
     }
 }
