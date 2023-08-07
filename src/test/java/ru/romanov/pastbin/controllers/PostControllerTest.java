@@ -58,7 +58,7 @@ public class PostControllerTest {
     }
 
     @Test
-    void shouldGettingPostWhenPostIsPresent() {
+    void shouldGettingPostWhenPostPresent() {
         String domain = "http://localhost:8080/pastebin/posts/get/";
         String url = "someurl";
 

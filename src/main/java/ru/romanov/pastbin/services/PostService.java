@@ -36,7 +36,7 @@ public class PostService {
                 .orElseThrow(() -> new NoSuchElementException("Post not found"));
     }
 
-    private void setLifecycle(Post post) {
+    protected void setLifecycle(Post post) {
         post.setCreatedAt(new Date());
         if (post.getLifecycle() != 0) {
             Calendar calendar = Calendar.getInstance();
