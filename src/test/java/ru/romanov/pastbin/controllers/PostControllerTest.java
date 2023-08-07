@@ -1,6 +1,5 @@
 package ru.romanov.pastbin.controllers;
 
-import static java.util.Optional.empty;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import ru.romanov.pastbin.dto.PostDTO;
 import ru.romanov.pastbin.dto.ReturnedPostDTO;
-import ru.romanov.pastbin.models.Person;
 import ru.romanov.pastbin.models.Post;
 import ru.romanov.pastbin.repositories.PostRepository;
 import ru.romanov.pastbin.services.PostService;
@@ -21,7 +19,6 @@ import ru.romanov.pastbin.services.S3Service;
 
 import java.security.Principal;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 public class PostControllerTest {

@@ -31,10 +31,6 @@ public class S3Service {
         s3Client.createBucket(createBucketRequest);
     }
 
-    public ListBucketsResponse listBuckets() {
-        return s3Client.listBuckets();
-    }
-
     public String uploadText(String text, Principal principal) throws S3Exception {
         String objectKey = System.currentTimeMillis() + "_" + principal.hashCode();
         byte[] contentBytes = text.getBytes(StandardCharsets.UTF_8);
