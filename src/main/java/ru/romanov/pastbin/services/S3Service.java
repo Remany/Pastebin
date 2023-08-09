@@ -63,7 +63,7 @@ public class S3Service {
                 .bucket(bucketName)
                 .key(objectKey)
                 .build();
+
         DeleteObjectResponse deleteObjectResponse = s3Client.deleteObject(deleteObjectRequest);
-        System.out.println("Объект успешно удален из S3 хранилища");
     }
 }
