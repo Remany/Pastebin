@@ -19,8 +19,7 @@ public class PersonService {
         this.personRepository = personRepository;
     }
 
-    public Person getPersonByUsername(String username) {
-        return personRepository.findPersonByUsername(username)
-                .orElseThrow(() -> new NoSuchElementException("Person not found"));
+    public Optional<Person> getPersonByUsername(String username) {
+        return personRepository.findPersonByUsername(username);
     }
 }

@@ -27,7 +27,9 @@ public class PersonValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         PersonDTO personDTO = (PersonDTO) target;
-        Person foundPerson = personService.getPersonByUsername(personDTO.getUsername());
-        errors.rejectValue("username", "", "This username is already taken");
+        Optional<Person> foundPerson = personService.getPersonByUsername(personDTO.getUsername());
+        if (foundPerson.isPresent()) {
+            errors.rejectValue("username", "", "This username is already taken");
+        }
     }
 }

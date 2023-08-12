@@ -61,7 +61,7 @@ class PostServiceTest {
 
         Person person = new Person();
         person.setUsername("someName");
-        when(personService.getPersonByUsername(person.getUsername())).thenReturn(person);
+        when(personService.getPersonByUsername(person.getUsername())).thenReturn(Optional.of(person));
 
         Principal principal = new Principal() {
             @Override
